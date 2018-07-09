@@ -22,6 +22,6 @@ public class StudentLoginController {
 		if(studentImple.validateStudent(student).get()!=null){
 			return new ResponseEntity("Your Details ====="+student.toString(),HttpStatus.OK);	
 		}
-		return new ResponseEntity("Invalid Credentials",HttpStatus.OK);
+		return new ResponseEntity("Invalid Credentials",HttpStatus.CONFLICT);
 	}
 }
