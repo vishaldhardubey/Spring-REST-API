@@ -12,9 +12,19 @@ public class StudentServiceImplementation {
 	@Autowired
 	private DAO dao;
 	
-	public Optional<Student> validateStudent(Student student) {
+	public Optional<Student> loginStudent(Student student) {
 		String id=student.getEmail();
 		Optional<Student> student1=dao.findById(id);
 		return student1;
+	}
+	
+	public boolean registerStudent(Student student){
+		if(dao.existsById(student.getEmail())) {
+			return true;
+		}
+		return false;
+	}
+	public void saveStudent(Student student) {
+		dao.insert(student);
 	}
 }
