@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bridgelabz.mail.Mailer;
 import com.bridgelabz.model.Student;
 import com.bridgelabz.studentservice.StudentServiceImplementation;
 import com.bridgelabz.token.TokenGenerator;
@@ -19,14 +20,15 @@ import com.bridgelabz.token.TokenGenerator;
 public class StudentLoginController {
 	@Autowired
 	private StudentServiceImplementation studentImple;
+	
 	@Autowired
 	private TokenGenerator token ;
+	
 	@RequestMapping(method=RequestMethod.POST,value="/studentLogin")
 	public ResponseEntity loginEmail(@RequestBody Student student) {
+		System.err.println("******************Inside Controller***************");
 		if(studentImple.loginStudent(student).get()!=null){
-			String validToken=token.generator(student);
-			System.out.println(validToken+"****************************************");
-			token.parseJWT(validToken);
+			
 			return new ResponseEntity("Your Details ====="+student.toString(),HttpStatus.OK);	
 		}
 		return new ResponseEntity("Invalid Credentials",HttpStatus.CONFLICT);
@@ -46,8 +48,11 @@ public class StudentLoginController {
 			return new ResponseEntity("Successfully Registered", HttpStatus.OK);
 		}
 	}
-	@RequestMapping
-	public String authorized() {
-		return "You are authorized person";
+	@RequestMapping(method=RequestMethod.POST,value="/forgetPassword")
+	public ResponseEntity<Student> forgetPassword(@RequestBody Student student,HttpServletResponse resp) {
+			if(studentImple.forgetPassword(student)) {
+				return new ResponseEntity("Your Details has been sent to your Email ID",HttpStatus.OK);
+			}
+		return new ResponseEntity("Your Email ID is not registered",HttpStatus.OK);	
 	}
 }
